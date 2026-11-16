@@ -16,8 +16,8 @@ Multi-region Home Assistant custom integration for monitoring planned and emerge
 
 ## Requirements
 
-- Home Assistant (`2024.12.0`+ / Python `3.12`+)
-- `dtek-blackout-client==0.2.0`
+- Home Assistant (`2025.1.0`+ / Python `3.12`+)
+- `dtek-blackout-client==0.2.1`
 
 ## Development
 
@@ -32,3 +32,4 @@ pytest
 ## License
 
 [MIT](LICENSE)
+

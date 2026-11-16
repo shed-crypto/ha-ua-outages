@@ -30,7 +30,7 @@ def test_manifest_is_valid() -> None:
     assert manifest["domain"] == DOMAIN
     assert manifest["config_flow"] is True
     assert manifest["iot_class"] == "cloud_polling"
-    assert "dtek-blackout-client==0.2.0" in manifest["requirements"]
+    assert "dtek-blackout-client==0.2.1" in manifest["requirements"]
     assert isinstance(manifest["version"], str) and manifest["version"]
 
 
