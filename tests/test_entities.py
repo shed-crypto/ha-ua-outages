@@ -198,7 +198,7 @@ class TestEntitiesAndPlatforms:
 
         assert await hass.config_entries.async_unload(entry.entry_id)
 
-    @pytest.mark.freeze_time("2026-11-16T08:30:00+00:00")
+    @pytest.mark.freeze_time("2026-11-16T07:30:00+00:00")
     async def test_entity_objects_availability_calendar_events_and_diagnostics(
         self,
         hass: HomeAssistant,
@@ -206,105 +206,106 @@ class TestEntitiesAndPlatforms:
     ) -> None:
         address_entry.add_to_hass(hass)
         coord = UaOutagesCoordinator(hass, address_entry)
-        stab_outage = AddressOutage(
-            reason="Стабілізаційне відключення",
-            kind=OUTAGE_KIND_STABILIZATION,
-            start=datetime(2026, 11, 16, 10, 0, tzinfo=KYIV_TZ),
-            end=datetime(2026, 11, 16, 12, 0, tzinfo=KYIV_TZ),
-            outage_type="1",
-        )
-        snap = _snapshot_with_outage(outage=stab_outage)
+        try:
+            stab_outage = AddressOutage(
+                reason="Стабілізаційне відключення",
+                kind=OUTAGE_KIND_STABILIZATION,
+                start=datetime(2026, 11, 16, 10, 0, tzinfo=KYIV_TZ),
+                end=datetime(2026, 11, 16, 12, 0, tzinfo=KYIV_TZ),
+                outage_type="1",
+            )
+            snap = _snapshot_with_outage(outage=stab_outage)
 
-        with patch(
-            "custom_components.ua_outages.coordinator.fetch_dtek_snapshot",
-            new=AsyncMock(return_value=snap),
-        ):
-            data = await coord._async_update_data()
-            coord.data = data
-
-        # Instantiate all entity classes directly to inspect localized names & properties.
-        sensors = [
-            UaOutagesGroupSensor(coord),
-            UaOutagesNextOutageSensor(coord),
-            UaOutagesOutageEndSensor(coord),
-            UaOutagesDailyHoursSensor(coord, "outages_today", is_tomorrow=False),
-            UaOutagesDailyHoursSensor(coord, "outages_tomorrow", is_tomorrow=True),
-            UaOutagesGroupsStatusSensor(coord),
-            UaOutagesAddressStatusSensor(coord),
-            UaOutagesRestorationSensor(coord),
-            UaOutagesScheduleUpdatedSensor(coord),
-            UaOutagesLastUpdateSensor(coord),
-            UaOutagesConnectionSensor(coord),
-        ]
-        assert sensors[0].suggested_object_id == "group"
-        assert sensors[0].name == "Черга відключень"
-        assert sensors[1].native_value == datetime(2026, 11, 16, 8, 0, tzinfo=UTC)
-        assert sensors[2].native_value is None
-        assert sensors[3].native_value == 2.0
-        assert sensors[4].native_value == 1.0
-        assert sensors[5].native_value == "others_all"
-        assert sensors[6].available is True
-        assert sensors[7].native_value == datetime(2026, 11, 16, 12, 0, tzinfo=KYIV_TZ)
-        assert sensors[8].native_value == datetime(2026, 11, 16, 9, 0, tzinfo=UTC)
-        assert sensors[9].native_value is not None
-        assert sensors[10].native_value == "ok"
-
-        sched_bin = UaOutagesScheduledOutageBinarySensor(coord)
-        addr_bin = UaOutagesAddressOutageBinarySensor(coord)
-        assert sched_bin.is_on is False
-        assert addr_bin.is_on is True
-        assert addr_bin.available is True
-
-        # Switch to offline mirror mode: address entities become unavailable.
-        with (
-            patch(
+            with patch(
                 "custom_components.ua_outages.coordinator.fetch_dtek_snapshot",
-                new=AsyncMock(side_effect=DtekBlockedError("waf")),
-            ),
-            patch(
-                "custom_components.ua_outages.coordinator.fetch_mirror_snapshot",
-                new=AsyncMock(return_value=_snapshot_with_outage(dtek_source=False)),
-            ),
-        ):
-            coord.data = await coord._async_update_data()
+                new=AsyncMock(return_value=snap),
+            ):
+                data = await coord._async_update_data()
+                coord.data = data
 
-        assert sensors[6].available is False
-        assert sensors[7].available is False
-        assert addr_bin.available is False
+            # Instantiate all entity classes directly to inspect localized names & properties.
+            sensors = [
+                UaOutagesGroupSensor(coord),
+                UaOutagesNextOutageSensor(coord),
+                UaOutagesOutageEndSensor(coord),
+                UaOutagesDailyHoursSensor(coord, "outages_today", is_tomorrow=False),
+                UaOutagesDailyHoursSensor(coord, "outages_tomorrow", is_tomorrow=True),
+                UaOutagesGroupsStatusSensor(coord),
+                UaOutagesAddressStatusSensor(coord),
+                UaOutagesRestorationSensor(coord),
+                UaOutagesScheduleUpdatedSensor(coord),
+                UaOutagesLastUpdateSensor(coord),
+                UaOutagesConnectionSensor(coord),
+            ]
+            assert sensors[0].suggested_object_id == "group"
+            assert sensors[0].name == "Черга відключень"
+            assert sensors[1].native_value == datetime(2026, 11, 16, 8, 0, tzinfo=UTC)
+            assert sensors[2].native_value is None
+            assert sensors[3].native_value == 2.0
+            assert sensors[4].native_value == 1.0
+            assert sensors[5].native_value == "others_all"
+            assert sensors[6].available is True
+            assert sensors[7].native_value == datetime(2026, 11, 16, 12, 0, tzinfo=KYIV_TZ)
+            assert sensors[8].native_value == datetime(2026, 11, 16, 9, 0, tzinfo=UTC)
+            assert sensors[9].native_value is not None
+            assert sensors[10].native_value == "ok"
 
-        # Calendars include weekly preset and exclude stabilization duplicates.
-        main_cal = UaOutagesMainCalendar(coord)
-        other_cal = UaOutagesOtherGroupsCalendar(coord)
-        events = await main_cal.async_get_events(
-            hass,
-            datetime(2026, 11, 16, 0, 0, tzinfo=UTC),
-            datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
-        )
-        assert len(events) >= 3
-        assert main_cal.event is not None
-        other_events = await other_cal.async_get_events(
-            hass,
-            datetime(2026, 11, 16, 0, 0, tzinfo=UTC),
-            datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
-        )
-        assert any("3.2:" in ev.summary for ev in other_events)
+            sched_bin = UaOutagesScheduledOutageBinarySensor(coord)
+            addr_bin = UaOutagesAddressOutageBinarySensor(coord)
+            assert sched_bin.is_on is False
+            assert addr_bin.is_on is True
+            assert addr_bin.available is True
 
-        # EventEntity triggers state update cleanly.
-        ev_entity = UaOutagesEventEntity(coord)
-        ev_entity.hass = hass
-        ev_entity.entity_id = "event.home_events"
-        ev_entity.async_write_ha_state = MagicMock()  # type: ignore[method-assign]
-        ev_entity._handle_event(EVENT_OUTAGE_STARTED, {"duration_minutes": 120})
-        assert ev_entity.state_attributes["event_type"] == EVENT_OUTAGE_STARTED
+            # Switch to offline mirror mode: address entities become unavailable.
+            with (
+                patch(
+                    "custom_components.ua_outages.coordinator.fetch_dtek_snapshot",
+                    new=AsyncMock(side_effect=DtekBlockedError("waf")),
+                ),
+                patch(
+                    "custom_components.ua_outages.coordinator.fetch_mirror_snapshot",
+                    new=AsyncMock(return_value=_snapshot_with_outage(dtek_source=False)),
+                ),
+            ):
+                coord.data = await coord._async_update_data()
 
-        # Diagnostics redacts sensitive street/house/title fields.
-        address_entry.runtime_data = coord
-        diag = await async_get_config_entry_diagnostics(hass, address_entry)
-        assert diag["entry"]["title"] == "**REDACTED**"
-        assert diag["entry"]["data"]["street"] == "**REDACTED**"
-        assert diag["entry"]["data"]["house"] == "**REDACTED**"
-        assert diag["entry"]["data"]["site_key"] == "krem"
-        assert diag["diagnostics"]["site_key"] == "krem"
-        assert STATE_UNAVAILABLE != diag["diagnostics"]["connection"]
+            assert sensors[6].available is False
+            assert sensors[7].available is False
+            assert addr_bin.available is False
 
-        await coord.async_shutdown()
+            # Calendars include weekly preset and exclude stabilization duplicates.
+            main_cal = UaOutagesMainCalendar(coord)
+            other_cal = UaOutagesOtherGroupsCalendar(coord)
+            events = await main_cal.async_get_events(
+                hass,
+                datetime(2026, 11, 16, 0, 0, tzinfo=UTC),
+                datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
+            )
+            assert len(events) >= 3
+            assert main_cal.event is not None
+            other_events = await other_cal.async_get_events(
+                hass,
+                datetime(2026, 11, 16, 0, 0, tzinfo=UTC),
+                datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
+            )
+            assert any("3.2:" in ev.summary for ev in other_events)
+
+            # EventEntity triggers state update cleanly.
+            ev_entity = UaOutagesEventEntity(coord)
+            ev_entity.hass = hass
+            ev_entity.entity_id = "event.home_events"
+            ev_entity.async_write_ha_state = MagicMock()  # type: ignore[method-assign]
+            ev_entity._handle_event(EVENT_OUTAGE_STARTED, {"duration_minutes": 120})
+            assert ev_entity.state_attributes["event_type"] == EVENT_OUTAGE_STARTED
+
+            # Diagnostics redacts sensitive street/house/title fields.
+            address_entry.runtime_data = coord
+            diag = await async_get_config_entry_diagnostics(hass, address_entry)
+            assert diag["entry"]["title"] == "**REDACTED**"
+            assert diag["entry"]["data"]["street"] == "**REDACTED**"
+            assert diag["entry"]["data"]["house"] == "**REDACTED**"
+            assert diag["entry"]["data"]["site_key"] == "krem"
+            assert diag["diagnostics"]["site_key"] == "krem"
+            assert STATE_UNAVAILABLE != diag["diagnostics"]["connection"]
+        finally:
+            await coord.async_shutdown()
