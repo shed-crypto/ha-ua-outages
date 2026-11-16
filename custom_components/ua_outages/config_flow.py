@@ -7,7 +7,6 @@ import re
 from collections.abc import Mapping
 from typing import Any
 
-import voluptuous as vol
 from dtek_client.exceptions import DtekBlockedError, DtekClientError, DtekDataError
 from dtek_client.models import HomeNumResponse
 from homeassistant.config_entries import (
@@ -20,6 +19,7 @@ from homeassistant.config_entries import (
 from homeassistant.core import callback
 from homeassistant.helpers import selector
 
+from ._schema import vol
 from .api import get_dtek_client
 from .const import (
     CONF_EXCLUDED_GROUPS,

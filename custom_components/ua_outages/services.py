@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
-import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.core import HomeAssistant, ServiceCall, ServiceResponse, SupportsResponse
 from homeassistant.exceptions import ServiceValidationError
 
+from ._schema import vol
 from .const import DOMAIN
 from .coordinator import UaOutagesCoordinator
 
