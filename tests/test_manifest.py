@@ -59,3 +59,23 @@ def test_constants_invariants() -> None:
     assert GROUPS_MODES == ("main", "any", "all")
     assert LANGUAGES == ("uk", "en", "ru")
     assert len(DEFAULT_GROUPS) == 12
+
+
+def test_translations_and_icons_are_consistent() -> None:
+    """Verify strings.json, all translations, and icons.json are valid and aligned."""
+    strings = json.loads((COMPONENT_DIR / "strings.json").read_text(encoding="utf-8"))
+    icons = json.loads((COMPONENT_DIR / "icons.json").read_text(encoding="utf-8"))
+
+    for lang in ("en", "uk", "ru"):
+        trans_path = COMPONENT_DIR / "translations" / f"{lang}.json"
+        assert trans_path.exists(), f"Missing translation file: {trans_path}"
+        trans = json.loads(trans_path.read_text(encoding="utf-8"))
+        assert set(trans.keys()) == set(strings.keys())
+        assert set(trans["config"]["step"].keys()) == set(strings["config"]["step"].keys())
+        assert set(trans["config"]["error"].keys()) == set(strings["config"]["error"].keys())
+        assert set(trans["entity"].keys()) == set(strings["entity"].keys())
+        for platform, entities in strings["entity"].items():
+            assert set(trans["entity"][platform].keys()) == set(entities.keys())
+
+    assert set(icons["entity"].keys()) == set(strings["entity"].keys())
+    assert set(icons["services"].keys()) == set(strings["services"].keys())

@@ -1,0 +1,200 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Ukraine Power Outages",
+        "description": "Select your DTEK region and configuration mode.",
+        "data": {
+          "site_key": "Region / Operator",
+          "mode": "Configuration mode"
+        }
+      },
+      "settlement": {
+        "title": "Select Settlement",
+        "description": "Select or type your city, town, or village name.",
+        "data": {
+          "settlement": "Settlement"
+        }
+      },
+      "street": {
+        "title": "Select Street",
+        "description": "Select or type your street in {settlement}.",
+        "data": {
+          "street": "Street"
+        }
+      },
+      "house": {
+        "title": "Select Building",
+        "description": "Select or enter your building number on {street}, {settlement}.",
+        "data": {
+          "house": "Building number",
+          "name": "Custom name (optional)",
+          "language": "Entity language"
+        }
+      },
+      "group": {
+        "title": "Select Disconnection Group",
+        "description": "Multiple or zero groups were returned for this building. Select the primary group.",
+        "data": {
+          "group": "Disconnection group"
+        }
+      },
+      "group_only": {
+        "title": "Group-Only Setup",
+        "description": "Monitor a disconnection group without a specific street address. {mirror_note}",
+        "data": {
+          "group": "Disconnection group",
+          "name": "Custom name (optional)",
+          "language": "Entity language"
+        }
+      },
+      "unreachable": {
+        "title": "DTEK Site Unreachable",
+        "description": "Could not fetch the street list from DTEK. {mirror_warning}",
+        "data": {
+          "action": "Next action"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the DTEK site.",
+      "blocked": "DTEK site returned an anti-bot WAF challenge.",
+      "no_cities": "DTEK returned an empty settlement list.",
+      "settlement_not_found": "Settlement not found. Check spelling or try without prefix.",
+      "ambiguous_settlement": "Multiple settlements matched. Select one from the narrowed list.",
+      "street_not_found": "Street not found. Check spelling or try without prefix.",
+      "ambiguous_street": "Multiple streets matched. Select one from the narrowed list.",
+      "invalid_house": "Enter a valid building number."
+    },
+    "abort": {
+      "already_configured": "This address or group is already configured.",
+      "reconfigure_successful": "Configuration updated successfully."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Outage Schedule Options",
+        "data": {
+          "update_interval": "Polling interval (minutes)",
+          "warn_before_start": "Warn before outage starts",
+          "warn_before_end": "Warn before power returns",
+          "use_mirror": "Use GitHub mirror fallback when DTEK is unavailable",
+          "show_possible": "Show weekly forecast (possible outages) in calendar",
+          "groups_mode": "Multi-group combination mode",
+          "excluded_groups": "Excluded secondary groups",
+          "extra_groups": "Additional groups to track",
+          "language": "Entity language"
+        }
+      }
+    }
+  },
+  "selector": {
+    "mode": {
+      "options": {
+        "address": "By street address (full outage & emergency info)",
+        "group_only": "By group only (works with mirror fallback)"
+      }
+    },
+    "language": {
+      "options": {
+        "uk": "Ukrainian",
+        "en": "English",
+        "ru": "Russian"
+      }
+    },
+    "unreachable_action": {
+      "options": {
+        "retry": "Retry connecting to DTEK",
+        "group_only": "Switch to group-only setup"
+      }
+    },
+    "groups_mode": {
+      "options": {
+        "main": "Primary group only (show others separately)",
+        "any": "Any active group off (worst case)",
+        "all": "All tracked groups off (strict)"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "group": { "name": "Disconnection group" },
+      "next_outage": { "name": "Next outage" },
+      "outage_end": { "name": "Outage end" },
+      "outages_today": { "name": "Outages today" },
+      "outages_tomorrow": { "name": "Outages tomorrow" },
+      "groups_status": {
+        "name": "Groups status",
+        "state": {
+          "none": "All groups on",
+          "others_some": "Some secondary groups off",
+          "others_all": "All secondary groups off",
+          "main": "Primary group off",
+          "main_some": "Primary and some secondary off",
+          "main_all": "All groups off"
+        }
+      },
+      "address_status": {
+        "name": "Address status",
+        "state": {
+          "none": "No active outage",
+          "stabilization": "Stabilization outage",
+          "emergency": "Emergency outage",
+          "planned": "Planned works",
+          "other": "Other outage"
+        }
+      },
+      "restoration": { "name": "Expected restoration" },
+      "schedule_updated": { "name": "Schedule updated" },
+      "last_update": { "name": "Last poll" },
+      "connection": {
+        "name": "Connection",
+        "state": {
+          "ok": "DTEK online",
+          "mirror": "Mirror fallback",
+          "offline": "Offline (cached)"
+        }
+      }
+    },
+    "binary_sensor": {
+      "scheduled_outage": { "name": "Scheduled outage" },
+      "address_outage": { "name": "Address outage" }
+    },
+    "calendar": {
+      "outages": { "name": "Outages" },
+      "other_groups": { "name": "Other groups" }
+    },
+    "event": {
+      "events": {
+        "name": "Outage events",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "schedule_published": "Schedule published",
+              "schedule_changed": "Schedule changed",
+              "outage_warning": "Outage warning",
+              "possible_outage_warning": "Possible outage warning",
+              "outage_end_warning": "Restoration warning",
+              "outage_started": "Outage started",
+              "outage_ended": "Outage ended",
+              "address_outage": "Address outage",
+              "group_changed": "Group changed",
+              "groups_changed": "Groups list changed"
+            }
+          }
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh": {
+      "name": "Refresh schedule",
+      "description": "Force an immediate schedule update from DTEK or mirror."
+    },
+    "get_schedule": {
+      "name": "Get schedule",
+      "description": "Return full structured outage schedule data for automations."
+    }
+  }
+}
