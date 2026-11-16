@@ -1,0 +1,44 @@
+{
+  "entity": {
+    "sensor": {
+      "group": { "default": "mdi:transmission-tower" },
+      "next_outage": { "default": "mdi:clock-alert-outline" },
+      "outage_end": { "default": "mdi:clock-check-outline" },
+      "outages_today": { "default": "mdi:flash-off" },
+      "outages_tomorrow": { "default": "mdi:calendar-clock" },
+      "groups_status": { "default": "mdi:format-list-group" },
+      "address_status": { "default": "mdi:home-lightning-bolt-outline" },
+      "restoration": { "default": "mdi:lightning-bolt-circle" },
+      "schedule_updated": { "default": "mdi:update" },
+      "last_update": { "default": "mdi:sync" },
+      "connection": { "default": "mdi:cloud-check-outline" }
+    },
+    "binary_sensor": {
+      "scheduled_outage": {
+        "default": "mdi:power-plug-off-outline",
+        "state": {
+          "off": "mdi:power-plug-outline",
+          "on": "mdi:power-plug-off"
+        }
+      },
+      "address_outage": {
+        "default": "mdi:home-alert-outline",
+        "state": {
+          "off": "mdi:home-check-outline",
+          "on": "mdi:home-alert"
+        }
+      }
+    },
+    "calendar": {
+      "outages": { "default": "mdi:calendar-alert" },
+      "other_groups": { "default": "mdi:calendar-multiselect" }
+    },
+    "event": {
+      "events": { "default": "mdi:bell-alert-outline" }
+    }
+  },
+  "services": {
+    "refresh": { "service": "mdi:refresh" },
+    "get_schedule": { "service": "mdi:calendar-export" }
+  }
+}

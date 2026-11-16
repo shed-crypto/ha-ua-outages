@@ -27,3 +27,4 @@ body:
       description: Describe what appeared on the official DTEK site vs in the integration (avoid posting personal data if undesired).
     validations:
       required: true
+
