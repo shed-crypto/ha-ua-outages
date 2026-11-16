@@ -6,7 +6,7 @@ authors = [{ name = "Rachenko Oleksii", email = "alexey.rachenko@gmail.com" }]
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
-    "dtek-blackout-client==0.2.0",
+    "dtek-blackout-client>=0.2.1,<0.3.0",
 ]
 
 [tool.pytest.ini_options]
@@ -25,10 +25,6 @@ strict = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
-
-[[tool.mypy.overrides]]
-module = "dtek_client.*"
-ignore_missing_imports = true
 
 [tool.black]
 line-length = 100

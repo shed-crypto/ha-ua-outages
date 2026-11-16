@@ -23,3 +23,4 @@ jobs:
         with:
           files: ua_outages.zip
           generate_release_notes: true
+
