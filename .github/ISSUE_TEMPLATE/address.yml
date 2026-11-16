@@ -1,0 +1,29 @@
+name: Address / Parsing Issue
+description: Report a missing settlement, street, house number, or wrong group parsing
+title: "[Address]: "
+labels: ["address"]
+body:
+  - type: dropdown
+    id: region
+    attributes:
+      label: Region (site_key)
+      options:
+        - kem (Kyiv City)
+        - krem (Kyiv Region)
+        - dnem (Dnipro Region)
+        - dem (Donetsk Region)
+        - oem (Odesa Region)
+    validations:
+      required: true
+  - type: input
+    id: settlement
+    attributes:
+      label: Settlement Name
+      placeholder: "e.g. Ukrainka"
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Describe what appeared on the official DTEK site vs in the integration (avoid posting personal data if undesired).
+    validations:
+      required: true

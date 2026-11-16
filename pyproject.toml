@@ -1,0 +1,46 @@
+[project]
+name = "ha-ua-outages"
+version = "0.1.0"
+description = "Multi-region Ukrainian power outage schedule integration for Home Assistant"
+authors = [{ name = "Rachenko Oleksii", email = "alexey.rachenko@gmail.com" }]
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+    "dtek-blackout-client==0.2.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+addopts = "--cov=custom_components/ua_outages --cov-report=term-missing --cov-fail-under=90"
+
+[tool.coverage.run]
+source = ["custom_components/ua_outages"]
+omit = ["tests/*"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "dtek_client.*"
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "ANN", "S", "N"]
+ignore = ["S101", "ANN401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["custom_components.ua_outages"]

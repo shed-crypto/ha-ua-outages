@@ -1,0 +1,55 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.python-version
+
+# --- Virtual Environments ---
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+
+# --- Home Assistant ---
+.storage/
+home-assistant.log*
+home-assistant_v2.db*
+
+# --- Testing & Coverage ---
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+nosetests.xml
+pytest.xml
+
+# --- Static Analysis & Linting ---
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints
+
+# --- IDEs & Editors ---
+.idea/
+*.iws
+
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- OS Specific ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Environment Variables ---
+.env
+.env.*
+!.env.example

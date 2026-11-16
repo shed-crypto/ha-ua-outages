@@ -1,0 +1,17 @@
+name: Feature Request
+description: Suggest a new provider, sensor, or enhancement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Description
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case
+    validations:
+      required: true
