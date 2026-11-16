@@ -23,6 +23,7 @@ from custom_components.ua_outages.config_flow import (
 from custom_components.ua_outages.const import (
     CONF_EXCLUDED_GROUPS,
     CONF_EXTRA_GROUPS,
+    CONF_FORCE_WEEKLY_PRESET,
     CONF_GROUP,
     CONF_GROUPS_MODE,
     CONF_HOUSE,
@@ -309,6 +310,7 @@ class TestOptionsFlow:
         schema_keys = {str(k) for k in result["data_schema"].schema}
         assert CONF_USE_MIRROR not in schema_keys
         assert CONF_EXTRA_GROUPS in schema_keys
+        assert CONF_FORCE_WEEKLY_PRESET in schema_keys
 
         result = await hass.config_entries.options.async_configure(
             result["flow_id"],
@@ -316,6 +318,7 @@ class TestOptionsFlow:
                 CONF_UPDATE_INTERVAL: 10,
                 CONF_WARN_BEFORE_START: ["15", "60"],
                 CONF_WARN_BEFORE_END: ["10"],
+                CONF_FORCE_WEEKLY_PRESET: True,
                 CONF_GROUPS_MODE: GROUPS_MODE_ANY,
                 CONF_EXTRA_GROUPS: ["GPV3.2"],
                 CONF_LANGUAGE: "en",
@@ -326,6 +329,7 @@ class TestOptionsFlow:
         assert saved[CONF_UPDATE_INTERVAL] == 10
         assert saved[CONF_WARN_BEFORE_START] == [60, 15]
         assert saved[CONF_WARN_BEFORE_END] == [10]
+        assert saved[CONF_FORCE_WEEKLY_PRESET] is True
         assert saved[CONF_USE_MIRROR] is False
         assert saved[
             CONF_EXCLUDED_GROUPS if CONF_EXCLUDED_GROUPS in saved else CONF_EXTRA_GROUPS

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -24,6 +25,7 @@ from custom_components.ua_outages.calendar import (
 from custom_components.ua_outages.const import (
     CONF_EXCLUDED_GROUPS,
     CONF_EXTRA_GROUPS,
+    CONF_FORCE_WEEKLY_PRESET,
     CONF_GROUP,
     CONF_GROUPS_MODE,
     CONF_LANGUAGE,
@@ -289,6 +291,35 @@ class TestEntitiesAndPlatforms:
                 datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
             )
             assert any("3.2:" in ev.summary for ev in other_events)
+
+            # When DTEK hides the weekly table, preset forecast is omitted by default
+            # unless force_weekly_preset is enabled in entry options.
+            coord.data = replace(
+                coord.data,
+                publication=Publication(
+                    daily_shown=True,
+                    weekly_shown=False,
+                    cur_schedule_shown=True,
+                    cur_outage_shown=True,
+                ),
+            )
+            hidden_events = await main_cal.async_get_events(
+                hass,
+                datetime(2026, 11, 17, 20, 0, tzinfo=UTC),
+                datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
+            )
+            assert hidden_events == []
+
+            hass.config_entries.async_update_entry(
+                address_entry,
+                options={**address_entry.options, CONF_FORCE_WEEKLY_PRESET: True},
+            )
+            forced_events = await main_cal.async_get_events(
+                hass,
+                datetime(2026, 11, 17, 20, 0, tzinfo=UTC),
+                datetime(2026, 11, 20, 0, 0, tzinfo=UTC),
+            )
+            assert len(forced_events) >= 1
 
             # EventEntity triggers state update cleanly.
             ev_entity = UaOutagesEventEntity(coord)

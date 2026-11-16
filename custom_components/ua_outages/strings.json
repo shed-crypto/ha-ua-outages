@@ -81,6 +81,7 @@
           "warn_before_end": "Warn before power returns",
           "use_mirror": "Use GitHub mirror fallback when DTEK is unavailable",
           "show_possible": "Show weekly forecast (possible outages) in calendar",
+          "force_weekly_preset": "Always show baseline weekly template when DTEK hides weekly table",
           "groups_mode": "Multi-group combination mode",
           "excluded_groups": "Excluded secondary groups",
           "extra_groups": "Additional groups to track",
