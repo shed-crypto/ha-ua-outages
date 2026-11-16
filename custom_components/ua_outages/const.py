@@ -17,6 +17,7 @@ __all__ = [
     "ADDRESS_OUTAGE_EVENT_KINDS",
     "CONF_EXCLUDED_GROUPS",
     "CONF_EXTRA_GROUPS",
+    "CONF_FORCE_WEEKLY_PRESET",
     "CONF_GROUP",
     "CONF_GROUPS_MODE",
     "CONF_HOUSE",
@@ -35,6 +36,7 @@ __all__ = [
     "DATA_CLIENTS",
     "DEFAULT_GROUPS",
     "DEFAULT_GROUPS_MODE",
+    "DEFAULT_FORCE_WEEKLY_PRESET",
     "DEFAULT_LANGUAGE",
     "DEFAULT_SHOW_POSSIBLE",
     "DEFAULT_TIMEZONE",
@@ -112,6 +114,7 @@ CONF_WARN_BEFORE_START: Final = "warn_before_start"
 CONF_WARN_BEFORE_END: Final = "warn_before_end"
 CONF_USE_MIRROR: Final = "use_mirror"
 CONF_SHOW_POSSIBLE: Final = "show_possible"
+CONF_FORCE_WEEKLY_PRESET: Final = "force_weekly_preset"
 CONF_GROUPS_MODE: Final = "groups_mode"
 CONF_EXCLUDED_GROUPS: Final = "excluded_groups"
 CONF_EXTRA_GROUPS: Final = "extra_groups"
@@ -141,6 +144,7 @@ WARN_MINUTE_OPTIONS: Final[tuple[int, ...]] = (1, 5, 10, 15, 30, 60, 120)
 
 DEFAULT_USE_MIRROR: Final = True
 DEFAULT_SHOW_POSSIBLE: Final = True
+DEFAULT_FORCE_WEEKLY_PRESET: Final = False
 DEFAULT_GROUPS_MODE: Final = GROUPS_MODE_MAIN
 
 GROUP_REMOVAL_UPDATES: Final = 3

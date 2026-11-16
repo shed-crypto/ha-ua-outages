@@ -12,7 +12,9 @@ from homeassistant.util import dt as dt_util
 
 from .api import AddressOutage
 from .const import (
+    CONF_FORCE_WEEKLY_PRESET,
     CONF_SHOW_POSSIBLE,
+    DEFAULT_FORCE_WEEKLY_PRESET,
     DEFAULT_LANGUAGE,
     DEFAULT_SHOW_POSSIBLE,
     OUTAGE_KIND_EMERGENCY,
@@ -83,7 +85,12 @@ class _BaseOutagesCalendar(UaOutagesEntity, CalendarEntity):
         enabled = bool(
             self.coordinator.config_entry.options.get(CONF_SHOW_POSSIBLE, DEFAULT_SHOW_POSSIBLE)
         )
-        weekly_allowed = data.publication is None or data.publication.weekly_shown
+        force_preset = bool(
+            self.coordinator.config_entry.options.get(
+                CONF_FORCE_WEEKLY_PRESET, DEFAULT_FORCE_WEEKLY_PRESET
+            )
+        )
+        weekly_allowed = force_preset or data.publication is None or data.publication.weekly_shown
         return enabled and weekly_allowed
 
     def _all_events(self) -> list[CalendarEvent]:

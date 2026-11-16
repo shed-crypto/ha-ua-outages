@@ -24,6 +24,7 @@ from .api import get_dtek_client
 from .const import (
     CONF_EXCLUDED_GROUPS,
     CONF_EXTRA_GROUPS,
+    CONF_FORCE_WEEKLY_PRESET,
     CONF_GROUP,
     CONF_GROUPS_MODE,
     CONF_HOUSE,
@@ -39,6 +40,7 @@ from .const import (
     CONF_USE_MIRROR,
     CONF_WARN_BEFORE_END,
     CONF_WARN_BEFORE_START,
+    DEFAULT_FORCE_WEEKLY_PRESET,
     DEFAULT_GROUPS,
     DEFAULT_GROUPS_MODE,
     DEFAULT_LANGUAGE,
@@ -848,6 +850,13 @@ class UaOutagesOptionsFlow(OptionsFlowWithReload):
             vol.Required(
                 CONF_SHOW_POSSIBLE,
                 default=bool(opts.get(CONF_SHOW_POSSIBLE, DEFAULT_SHOW_POSSIBLE)),
+            )
+        ] = selector.BooleanSelector()
+
+        fields[
+            vol.Required(
+                CONF_FORCE_WEEKLY_PRESET,
+                default=bool(opts.get(CONF_FORCE_WEEKLY_PRESET, DEFAULT_FORCE_WEEKLY_PRESET)),
             )
         ] = selector.BooleanSelector()
 
