@@ -9,6 +9,6 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/shed-crypto/ha-ua-outages/issues",
   "requirements": ["dtek-blackout-client==0.2.1"],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
 
