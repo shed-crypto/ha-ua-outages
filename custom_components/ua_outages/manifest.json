@@ -1,6 +1,7 @@
 {
   "domain": "ua_outages",
   "name": "Ukraine Power Outages",
+  "categories": ["local_services", "energy"],
   "codeowners": ["@shed-crypto"],
   "config_flow": true,
   "documentation": "https://github.com/shed-crypto/ha-ua-outages",
