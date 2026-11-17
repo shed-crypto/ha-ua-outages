@@ -1,5 +1,12 @@
 # Ukraine Power Outages (`ua_outages`)
 
+[![Tests](https://github.com/shed-crypto/ha-ua-outages/actions/workflows/tests.yml/badge.svg)](https://github.com/shed-crypto/ha-ua-outages/actions/workflows/tests.yml)
+[![Validate](https://github.com/shed-crypto/ha-ua-outages/actions/workflows/validate.yml/badge.svg)](https://github.com/shed-crypto/ha-ua-outages/actions/workflows/validate.yml)
+[![Release](https://img.shields.io/github/v/release/shed-crypto/ha-ua-outages)](https://github.com/shed-crypto/ha-ua-outages/releases)
+[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![HACS](https://img.shields.io/badge/HACS-Integration-41BDF5?logo=home-assistant&logoColor=white)](https://hacs.xyz/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Multi-region Home Assistant custom integration for monitoring planned, probable, and emergency electricity outage schedules in Ukraine, built on [`dtek-blackout-client`](https://github.com/shed-crypto/dtek-blackout-client).
 
 ## Features
